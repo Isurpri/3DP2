@@ -61,7 +61,14 @@ public class PlayerController : MonoBehaviour
     public AnimationClip m_IdleAnimationClip;
     public AnimationClip m_ShootAnimationClip;
 
-   
+    public float m_PortalDistance = 1.5f;
+    Vector3 m_MovementDirection;
+    public float m_MaxAnglesToTeleport = 75.0f;
+
+    public Portal m_BluePortal;
+    public Portal m_OrangePortal;
+
+
     // [Header("particles")]
     // public ParticleSystem m_ParticlesHealth;
     // public ParticleSystem m_ParticlesBuff;
@@ -157,6 +164,7 @@ public class PlayerController : MonoBehaviour
             l_SpeedMultiplier = m_SpeedMultiplier;
 
         l_Movement.Normalize();
+        m_MovementDirection = l_Movement;
         l_Movement *= m_Speed * l_SpeedMultiplier * Time.deltaTime;
 
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
@@ -173,8 +181,13 @@ public class PlayerController : MonoBehaviour
         else if (m_VerticalSpeed > 0.0f && (l_CollisionFlags & CollisionFlags.Above) != 0)
             m_VerticalSpeed = 0.0f;
 
-        // if (CanShoot() && Input.GetMouseButtonDown(m_ShootMouseButton))
-        //     Shoot();
+        //------------------------------esto Importante if (CanShoot())
+        // {
+        //     if (Input.GetMouseButton(m_BlueShootMouseButton))
+
+
+        // } 
+        
         // if (CanReload() && Input.GetKeyDown(m_ReloadKeyCode))
         //     Reload();
 
@@ -226,22 +239,32 @@ public class PlayerController : MonoBehaviour
     //     }
     //     return true;
     // }
-    // void Shoot()
+    //------------------------------------importante void Shoot()
     // {
-    //     m_ChargerAmmoCount -= m_costAmmoShot;
-    //     SetShootAnimation();
+    //     // m_ChargerAmmoCount -= m_costAmmoShot;
+    //     // SetShootAnimation();
     //     Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
     //     if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ShootLayerMask.value))
     //     {
-    //         if (l_RayCastHit.collider.CompareTag("HitCollider"))
-    //             l_RayCastHit.collider.GetComponent<HitCollider>().Hit();
-    //         else if (l_RayCastHit.collider.CompareTag("Target"))
+    //         if(l_RayCastHit.collider.CompareTag("DrawableWall"))
     //         {
-    //             m_score += l_RayCastHit.collider.GetComponent<TargetCollider>().Hit();
-    //             UIManager.Instance.SumScore(m_score);
+    //             if (m_PortalDistance.IsValidPosition(l_RayCastHit.point, l_RayCastHit.normal))
+    //             {
+    //                 _Portal.gameObject.SetActiveTrue(true);
+    //             }
+    //             else
+    //                 _Portal.gameObject.SetActive(false);
+
     //         }
-    //         else
-    //             CreateShootHitParticles(l_RayCastHit.point, l_RayCastHit.normal);
+            // if (l_RayCastHit.collider.CompareTag("HitCollider"))
+            //     l_RayCastHit.collider.GetComponent<HitCollider>().Hit();
+            // else if (l_RayCastHit.collider.CompareTag("Target"))
+            // {
+            //     m_score += l_RayCastHit.collider.GetComponent<TargetCollider>().Hit();
+            //     UIManager.Instance.SumScore(m_score);
+            // }
+            // else
+            //     CreateShootHitParticles(l_RayCastHit.point, l_RayCastHit.normal);
     //     }
     // }
     
@@ -257,28 +280,53 @@ public class PlayerController : MonoBehaviour
         m_Animation.CrossFade(m_ShootAnimationClip.name, 0.1f);
         m_Animation.CrossFadeQueued(m_IdleAnimationClip.name, 0.1f);
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
-        
-        if (other.CompareTag("Button"))
+        if (other.CompareTag("Portal"))
         {
-            m_score = 0;
-            // UIManager.Instance.SumScore(m_score);
+            Portal l_Portal = other.GetComponent<Portal>();
+            if (CanTeleport(l_Portal))
+                Teleport(other.GetComponent<Portal>());
         }
-        else if (other.CompareTag("DeadZone"))
-        {
-            // Kill();
-        }
-        if (other.CompareTag("ShootingGallery"))
-        {
-            // UIManager.Instance.m_ScoreText.gameObject.SetActive(true);
-        }
-        if (other.CompareTag("NextLevel"))
-        {
-            // GameManager.GetGameManager().LoadScene();
-        }
+        // if (other.CompareTag("Button"))
+        // {
+        //     m_score = 0;
+        //     // UIManager.Instance.SumScore(m_score);
+        // }
+        // else if (other.CompareTag("DeadZone"))
+        // {
+        //     // Kill();
+        // }
+        // if (other.CompareTag("ShootingGallery"))
+        // {
+        //     // UIManager.Instance.m_ScoreText.gameObject.SetActive(true);
+        // }
+        // if (other.CompareTag("NextLevel"))
+        // {
+        //     // GameManager.GetGameManager().LoadScene();
+        // }
+    }
+    bool CanTeleport(Portal _Portal)
+    {
+        float l_DotValue = Vector3.Dot(_Portal.transform.forward, -m_MovementDirection);
+        return l_DotValue > MathF.Cos(m_MaxAnglesToTeleport * Mathf.Deg2Rad);
+    }
+    void Teleport(Portal _Portal)
+    {
+        Vector3 l_NextPosition = transform.position + m_MovementDirection * m_PortalDistance;
+        Vector3 l_LocalPosition = _Portal.m_OtherPortalTransform.InverseTransformPoint(l_NextPosition);
+        Vector3 l_WorldPosition = _Portal.m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
 
+        Vector3 l_WorldForward = transform.forward;
+        Vector3 l_LocalForward = _Portal.m_OtherPortalTransform.InverseTransformDirection(l_WorldForward);
+        l_WorldForward = _Portal.m_MirrorPortal.transform.TransformDirection(l_LocalForward);
+
+        m_CharacterController.enabled = false;
+        transform.position = l_WorldPosition;
+        transform.rotation = Quaternion.LookRotation(l_WorldForward);
+        m_Yaw = transform.rotation.eulerAngles.y;
+        m_CharacterController.enabled = true;
     }
     private void OnTriggerExit(Collider other)
     {
