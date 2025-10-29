@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public AnimationClip m_IdleAnimationClip;
     public AnimationClip m_ShootAnimationClip;
 
+    [Header("Portal")]
     public float m_PortalDistance = 1.5f;
     Vector3 m_MovementDirection;
     public float m_MaxAnglesToTeleport = 75.0f;
@@ -181,12 +182,14 @@ public class PlayerController : MonoBehaviour
         else if (m_VerticalSpeed > 0.0f && (l_CollisionFlags & CollisionFlags.Above) != 0)
             m_VerticalSpeed = 0.0f;
 
-        //------------------------------esto Importante if (CanShoot())
-        // {
-        //     if (Input.GetMouseButton(m_BlueShootMouseButton))
-
-
-        // } 
+        if (CanShoot())
+        {
+            if (Input.GetMouseButton(m_BlueShootMouseButton))
+                Debug.Log("Pium!");
+                // Shoot(m_BluePortal);
+            else if (Input.GetMouseButton(m_OrangeShootMouseButton))
+                Shoot(m_OrangePortal);
+        } 
         
         // if (CanReload() && Input.GetKeyDown(m_ReloadKeyCode))
         //     Reload();
@@ -231,31 +234,31 @@ public class PlayerController : MonoBehaviour
     //         m_totalAmount = 0;
     //     }
     // }
-    // bool CanShoot()
-    // {
-    //     if (m_ChargerAmmoCount<=0 || isReloading)
-    //     {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-    //------------------------------------importante void Shoot()
-    // {
-    //     // m_ChargerAmmoCount -= m_costAmmoShot;
-    //     // SetShootAnimation();
-    //     Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-    //     if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ShootLayerMask.value))
-    //     {
-    //         if(l_RayCastHit.collider.CompareTag("DrawableWall"))
-    //         {
-    //             if (m_PortalDistance.IsValidPosition(l_RayCastHit.point, l_RayCastHit.normal))
-    //             {
-    //                 _Portal.gameObject.SetActiveTrue(true);
-    //             }
-    //             else
-    //                 _Portal.gameObject.SetActive(false);
+    bool CanShoot()
+    {
+        // if (m_ChargerAmmoCount<=0 || isReloading)
+        // {
+        //     return false;
+        // }
+        return true;
+    }
+    void Shoot(Portal _Portal)
+    {
+        // m_ChargerAmmoCount -= m_costAmmoShot;
+        // SetShootAnimation();
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ShootLayerMask.value))
+        {
+            if(l_RayCastHit.collider.CompareTag("DrawableWall"))
+            {
+                if (_Portal.IsValidPosition(l_RayCastHit.point, l_RayCastHit.normal))
+                {
+                    _Portal.gameObject.SetActive(true);
+                }
+                else
+                    _Portal.gameObject.SetActive(false);
 
-    //         }
+            }
             // if (l_RayCastHit.collider.CompareTag("HitCollider"))
             //     l_RayCastHit.collider.GetComponent<HitCollider>().Hit();
             // else if (l_RayCastHit.collider.CompareTag("Target"))
@@ -265,8 +268,8 @@ public class PlayerController : MonoBehaviour
             // }
             // else
             //     CreateShootHitParticles(l_RayCastHit.point, l_RayCastHit.normal);
-    //     }
-    // }
+        }
+    }
     
 
     void SetIdleAnimation()

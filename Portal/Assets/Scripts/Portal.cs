@@ -49,7 +49,6 @@ public class Portal : MonoBehaviour
                         float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, m_ValidPosition[i].forward);
                         if (l_DotAngle > Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
                             l_Valid = false;
-
                     }
                 }
                 else
