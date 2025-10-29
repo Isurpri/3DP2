@@ -356,7 +356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5182974999084004032, guid: 6cde5562023ae4a4c8a50b01c9f1d993, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.899
+      value: 4.956
       objectReference: {fileID: 0}
     - target: {fileID: 5182974999084004032, guid: 6cde5562023ae4a4c8a50b01c9f1d993, type: 3}
       propertyPath: m_LocalRotation.w
@@ -944,8 +944,8 @@ MonoBehaviour:
   m_ShootAnimationClip: {fileID: 0}
   m_PortalDistance: 1.5
   m_MaxAnglesToTeleport: 75
-  m_BluePortal: {fileID: 0}
-  m_OrangePortal: {fileID: 0}
+  m_BluePortal: {fileID: 1725354773}
+  m_OrangePortal: {fileID: 242002208}
   m_score: 0
   m_scoreNecessary: 20
   m_nextLevel: {fileID: 0}

@@ -185,8 +185,7 @@ public class PlayerController : MonoBehaviour
         if (CanShoot())
         {
             if (Input.GetMouseButton(m_BlueShootMouseButton))
-                Debug.Log("Pium!");
-                // Shoot(m_BluePortal);
+                Shoot(m_BluePortal);
             else if (Input.GetMouseButton(m_OrangeShootMouseButton))
                 Shoot(m_OrangePortal);
         } 
@@ -249,7 +248,7 @@ public class PlayerController : MonoBehaviour
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ShootLayerMask.value))
         {
-            if(l_RayCastHit.collider.CompareTag("DrawableWall"))
+            if (l_RayCastHit.collider.CompareTag("DrawableWall"))
             {
                 if (_Portal.IsValidPosition(l_RayCastHit.point, l_RayCastHit.normal))
                 {
@@ -259,6 +258,7 @@ public class PlayerController : MonoBehaviour
                     _Portal.gameObject.SetActive(false);
 
             }
+                
             // if (l_RayCastHit.collider.CompareTag("HitCollider"))
             //     l_RayCastHit.collider.GetComponent<HitCollider>().Hit();
             // else if (l_RayCastHit.collider.CompareTag("Target"))
