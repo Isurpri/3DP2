@@ -286,6 +286,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Portal"))
         {
             Portal l_Portal = other.GetComponent<Portal>();
+            Debug.Log("Hola");
             if (CanTeleport(l_Portal))
                 Teleport(other.GetComponent<Portal>());
         }
