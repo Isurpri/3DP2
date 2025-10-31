@@ -1,14 +1,7 @@
 using System;
-using System.Collections;
-using System.Runtime.InteropServices.WindowsRuntime;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
-    Vector3 m_startPosition;
-    Quaternion m_startRotation;
-
     float m_Yaw;
     float m_Pitch;
     public float m_YawSpeed;
@@ -32,15 +25,6 @@ public class PlayerController : MonoBehaviour
     public float m_ShootMaxDistance = 50.0f;
     public LayerMask m_ShootLayerMask;
     // public GameObject m_ShootParticles;
-    // PoolElements m_PoolParticles;
-
-    // [Header("Amount")]
-    // public float m_totalAmount = 50;
-    // public float m_MaxAmount = 70;
-    // public float m_ChargerAmmoCount = 24f;
-    // public float m_costAmmoShot = 1f;
-    // public float m_initialAmmo;
-    // bool isReloading = false;
 
     [Header("Input")]
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -50,8 +34,9 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public KeyCode m_RunKeyCode = KeyCode.LeftShift;
     public KeyCode m_ReloadKeyCode = KeyCode.R;
+    public KeyCode m_GrabKeyCode = KeyCode.E;
     public int m_BlueShootMouseButton = 0;
-    public int m_OrangeShootMouseButton = 1;
+    public int m_OrangeShootMouseButton =1;
 
     [Header("Ddebug Input")]
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
@@ -61,14 +46,28 @@ public class PlayerController : MonoBehaviour
     public AnimationClip m_IdleAnimationClip;
     public AnimationClip m_ShootAnimationClip;
 
-    [Header("Portal")]
+    [Header("Teleport")]
     public float m_PortalDistance = 1.5f;
     Vector3 m_MovementDirection;
     public float m_MaxAnglesToTeleport = 75.0f;
 
+    [Header("Portal")]
     public Portal m_BluePortal;
     public Portal m_OrangePortal;
 
+
+    [Header("AttachObject")]
+    public ForceMode m_ForceMode;
+    public float m_ThrowForce = 10.0f;
+    public Transform m_GripTrans;
+    Rigidbody m_AttachedObjectRb;
+    bool m_AttachingObject;
+    Vector3 m_StartAttachObjectPos;
+    float m_AttachingCurrentTime;
+    public float m_AttachingTime = 1.5f;
+    public float m_AttachObjectRotationDistLerp = 2.0f;
+    bool m_attachedObject;
+    public LayerMask m_ValidAttachObjectsLayerMask;
 
     // [Header("particles")]
     // public ParticleSystem m_ParticlesHealth;
@@ -76,20 +75,9 @@ public class PlayerController : MonoBehaviour
     // public ParticleSystem m_ParticlesNextLevel;
     // public ParticleSystem m_ParticlesHit;
 
-    [Header("Score")]
-    public float m_score = 0;
-    public float m_scoreNecessary = 20;
-    public GameObject m_nextLevel;
+   
     void Start()
     {
-        // m_initialHealth = m_Health;
-        // m_initialShield = m_Shield;
-
-        // m_PoolParticles=new PoolElements();
-        // m_PoolParticles.Init(25,m_ShootParticles);
-
-        // m_initialAmmo = m_ChargerAmmoCount;
-        // SetIdleAnimation();
 
         // // Espera a que el GameManager exista
         // if (GameManager.GetGameManager() == null)
@@ -111,8 +99,6 @@ public class PlayerController : MonoBehaviour
         //     return;
         // }
 
-        m_startPosition = transform.position;
-        m_startRotation = transform.rotation;
         DontDestroyOnLoad(gameObject);
         // GameManager.GetGameManager().SetPlayer(this);
         Cursor.lockState = CursorLockMode.Locked;
@@ -188,8 +174,16 @@ public class PlayerController : MonoBehaviour
                 Shoot(m_BluePortal);
             else if (Input.GetMouseButton(m_OrangeShootMouseButton))
                 Shoot(m_OrangePortal);
-        } 
-        
+        }
+        if (CanAttachObject())
+        {
+            AttachObject();
+        }
+
+        if (m_AttachedObjectRb!=null)
+        {
+            UpdateAttachedObject();
+        }
         // if (CanReload() && Input.GetKeyDown(m_ReloadKeyCode))
         //     Reload();
 
@@ -197,56 +191,21 @@ public class PlayerController : MonoBehaviour
 
         // NextLevel();
     }
-    // bool CanReload()
-    // {
-    //     if (m_VerticalSpeed!=0)
-    //         return false;
 
-    //     if (Input.GetKey(m_RunKeyCode))
-    //         return false;
+    bool CanAttachObject()
+    {
+        return true;
+    }
 
-    //     if (m_ChargerAmmoCount >= m_initialAmmo) //Cargador lleno
-    //         return false;
-
-    //     if (m_totalAmount <= 0)
-    //         return false;
-
-    //     return true;
-    // }
-    // void Reload()
-    // {
-    //     // SetReloadAnimation();
-
-    //     float needed = m_initialAmmo - m_ChargerAmmoCount;
-
-    //     if (needed <= 0)
-    //         return; 
-
-    //     if (m_totalAmount >= needed)
-    //     {
-    //         m_totalAmount -= needed;
-    //         m_ChargerAmmoCount += needed;
-    //     }
-    //     else 
-    //     {
-    //         m_ChargerAmmoCount += m_totalAmount;
-    //         m_totalAmount = 0;
-    //     }
-    // }
     bool CanShoot()
     {
-        // if (m_ChargerAmmoCount<=0 || isReloading)
-        // {
-        //     return false;
-        // }
         return true;
     }
     void Shoot(Portal _Portal)
     {
-        // m_ChargerAmmoCount -= m_costAmmoShot;
-        // SetShootAnimation();
+        //SetShootAnimation();
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-        if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ShootLayerMask.value))
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance,_Portal.m_ValidLayerMask.value,QueryTriggerInteraction.Ignore))
         {
             if (l_RayCastHit.collider.CompareTag("DrawableWall"))
             {
@@ -289,7 +248,6 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Portal"))
         {
             Portal l_Portal = other.GetComponent<Portal>();
-            Debug.Log("Hola");
             if (CanTeleport(l_Portal))
                 Teleport(other.GetComponent<Portal>());
         }
@@ -302,14 +260,7 @@ public class PlayerController : MonoBehaviour
         // {
         //     // Kill();
         // }
-        // if (other.CompareTag("ShootingGallery"))
-        // {
-        //     // UIManager.Instance.m_ScoreText.gameObject.SetActive(true);
-        // }
-        // if (other.CompareTag("NextLevel"))
-        // {
-        //     // GameManager.GetGameManager().LoadScene();
-        // }
+       
     }
     bool CanTeleport(Portal _Portal)
     {
@@ -332,12 +283,71 @@ public class PlayerController : MonoBehaviour
         m_Yaw = transform.rotation.eulerAngles.y;
         m_CharacterController.enabled = true;
     }
-    private void OnTriggerExit(Collider other)
+    
+
+
+    void AttachObject()
     {
-        if (other.CompareTag("ShootingGallery"))
+        if (Input.GetKeyDown(m_GrabKeyCode))
         {
-            // UIManager.Instance.m_ScoreText.gameObject.SetActive(false);
+            Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
+            {
+                if (l_RayCastHit.collider.CompareTag("Cube"))
+                {
+                    AttachObject(l_RayCastHit.rigidbody);
+                }
+            }
         }
+    }
+
+    void AttachObject(Rigidbody _Rb)
+    {
+        m_AttachingObject = true;
+        m_AttachedObjectRb = _Rb;
+        m_StartAttachObjectPos = _Rb.transform.position;
+        m_AttachingCurrentTime = 0.0f;
+        m_attachedObject = false;
+    }
+    void UpdateAttachedObject()
+    {
+        if (m_AttachingObject)
+        {
+            m_AttachingCurrentTime += Time.deltaTime;
+            float l_Pct=MathF.Min(1.0f, m_AttachingCurrentTime/m_AttachingTime);
+            Vector3 l_Position = Vector3.Lerp(m_StartAttachObjectPos, m_GripTrans.position, l_Pct);
+            float l_Distance = Vector3.Distance(l_Position,m_GripTrans.position);
+            float l_RotationPct =1.0f - MathF.Min(1.0f,l_Distance/m_AttachObjectRotationDistLerp);
+            Quaternion l_Rotation = Quaternion.Lerp(transform.rotation, m_GripTrans.rotation, l_RotationPct);
+            m_AttachedObjectRb.MovePosition(l_Position);
+            m_AttachedObjectRb.MoveRotation(l_Rotation);
+            if (l_Pct==1.0f)
+            {
+                m_AttachingObject = false;
+                m_attachedObject = true;
+                m_AttachedObjectRb.transform.SetParent(m_GripTrans);
+                m_AttachedObjectRb.transform.localPosition = Vector3.zero;
+                m_AttachedObjectRb.transform.localRotation = Quaternion.identity;
+                m_AttachedObjectRb.isKinematic = true;
+            }
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            ThrowObject(m_ThrowForce);
+        }
+        else if (Input.GetMouseButtonDown(1) || Input.GetKeyUp(m_GrabKeyCode))
+        {
+            ThrowObject(0.0f);
+        }
+    }
+    void ThrowObject(float force) 
+    {
+        m_AttachedObjectRb.isKinematic = false;
+        m_AttachedObjectRb.AddForce(m_PitchController.forward * force, m_ForceMode);
+        m_AttachedObjectRb.transform.SetParent(null);
+        m_attachedObject=false;
+        m_AttachingObject=false;
+        m_AttachedObjectRb = null;
     }
     // void Kill()
     // {
@@ -356,46 +366,5 @@ public class PlayerController : MonoBehaviour
     }*/
     
 
-    // public void NextLevel()
-    // {
-    //     if (m_nextLevel!=null)
-    //     {
-    //         if (m_score >= m_scoreNecessary)
-    //         {
-    //             m_ParticlesNextLevel.Play();
-    //             m_nextLevel.SetActive(true);
-    //         }
-    //         else
-    //         {
-    //             m_nextLevel.SetActive(false);
-    //         }
-    //     }
-    // }
-
-//     public void TakeDamage(float damage)
-//     {
-//         if (m_Shield>0)
-//         {
-//             float shieldDamage = damage * 0.75f;
-//             float healthdamage = damage * 0.25f;
-
-//             m_Shield -= Mathf.RoundToInt(shieldDamage);
-//             m_Health -= Mathf.RoundToInt(healthdamage);
-
-//             if (m_Shield < 0)  
-//                 m_Shield = 0;
-//         }
-//         else
-//         {
-//             m_Health -= damage;
-//         }
-
-//         if (m_Health <= 0)
-//         {
-//             m_Health = 0;
-//             Kill();
-//         }
-//         UIManager.Instance.UiVariables(m_ChargerAmmoCount, m_totalAmount, m_Health, m_Shield);
-
-//     }
+ 
 }
