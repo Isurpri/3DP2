@@ -170,9 +170,9 @@ public class PlayerController : MonoBehaviour
 
         if (CanShoot())
         {
-            if (Input.GetMouseButton(m_BlueShootMouseButton))
+            if (Input.GetMouseButtonDown(m_BlueShootMouseButton))
                 Shoot(m_BluePortal);
-            else if (Input.GetMouseButton(m_OrangeShootMouseButton))
+            else if (Input.GetMouseButtonDown(m_OrangeShootMouseButton))
                 Shoot(m_OrangePortal);
         }
         if (CanAttachObject())
@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour
 
     bool CanShoot()
     {
-        return true;
+        return m_AttachedObjectRb == null;
     }
     void Shoot(Portal _Portal)
     {
@@ -305,6 +305,7 @@ public class PlayerController : MonoBehaviour
     {
         m_AttachingObject = true;
         m_AttachedObjectRb = _Rb;
+        m_AttachedObjectRb.GetComponent<CompanionCube>().SetAttachedObj(true);
         m_StartAttachObjectPos = _Rb.transform.position;
         m_AttachingCurrentTime = 0.0f;
         m_attachedObject = false;
@@ -335,7 +336,7 @@ public class PlayerController : MonoBehaviour
         {
             ThrowObject(m_ThrowForce);
         }
-        else if (Input.GetMouseButtonDown(1) || Input.GetKeyUp(m_GrabKeyCode))
+        else if (Input.GetMouseButtonDown(1))
         {
             ThrowObject(0.0f);
         }
@@ -347,6 +348,7 @@ public class PlayerController : MonoBehaviour
         m_AttachedObjectRb.transform.SetParent(null);
         m_attachedObject=false;
         m_AttachingObject=false;
+        m_AttachedObjectRb.GetComponent<CompanionCube>().SetAttachedObj(false);
         m_AttachedObjectRb = null;
     }
     // void Kill()
