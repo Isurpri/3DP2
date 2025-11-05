@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-
 public class CompanionCube : MonoBehaviour
 {
     Rigidbody m_rb;
