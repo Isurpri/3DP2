@@ -236,11 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa2fc8f3ee4a51849b16bea236ce9386, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
-  m_LineRenderer: {fileID: 0}
+  m_LineRenderer: {fileID: 755888947}
   m_MaxDist: 50
   m_Layer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_MaxAlifeAngle: 15
 --- !u!4 &171125993
 Transform:
