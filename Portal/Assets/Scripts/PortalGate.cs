@@ -45,7 +45,16 @@ public class PortalGate : MonoBehaviour
         {
             m_States = TStates.OPEN;
             m_Animation.Play(m_OpenAnimationClip.name);
-            StartCoroutine(SetState(m_OpenAnimationClip.length, TStates.CLOSED));
+            StartCoroutine(SetState(m_OpenAnimationClip.length, TStates.OPENED));
+        }
+    }
+    public void Close()
+    {
+        if (m_States == TStates.OPENED)
+        {
+            m_States = TStates.CLOSE;
+            m_Animation.Play(m_CloseAnimationClip.name);
+            StartCoroutine(SetState(m_CloseAnimationClip.length, TStates.CLOSED));
         }
     }
 

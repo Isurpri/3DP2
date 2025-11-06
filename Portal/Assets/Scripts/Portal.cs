@@ -14,7 +14,7 @@ public class Portal : MonoBehaviour
     public LayerMask m_ValidLayerMask;
     public float m_MaxAnglePermitted = 5.0f;
     
-        public void LateUpdate()
+    public void LateUpdate()
     {
         Vector3 l_WorldPosition = Camera.main.transform.position;
         Vector3 l_LocalPosition = m_OtherPortalTransform.InverseTransformPoint(l_WorldPosition);

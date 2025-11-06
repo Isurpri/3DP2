@@ -11,5 +11,20 @@ public class PortalButton : MonoBehaviour
         {
             m_Event.Invoke();
         }
+        if (other.CompareTag("Player"))
+        {
+            m_Event.Invoke();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Cube"))
+        {
+            m_Event.Invoke();
+        }
+        if (other.CompareTag("Player"))
+        {
+            m_Event.Invoke();
+        }
     }
 }

@@ -247,7 +247,7 @@ MonoBehaviour:
   - {fileID: 296195309526909824}
   m_ValidLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_MaxAnglePermitted: 5
 --- !u!65 &4160547104467335914
 BoxCollider:
