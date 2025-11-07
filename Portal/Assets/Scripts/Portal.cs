@@ -29,38 +29,37 @@ public class Portal : MonoBehaviour
     }
     public bool IsValidPosition(Vector3 Position, Vector3 Normal)
     {
-        gameObject.SetActive(false);
         transform.position = Position;
         transform.rotation = Quaternion.LookRotation(Normal);
         bool l_Valid = true;
 
-        Vector3 l_CameraPosition = Camera.main.transform.position;
-        for (int i = 0; i < m_ValidPosition.Count; i++)
+        Vector3 l_CameraPosition = Camera.main.transform.position; 
+        foreach (Transform l_VaildPoint in m_ValidPosition)
         {
-            Vector3 l_ValidPosition = m_ValidPosition[i].position;
-            Vector3 l_Direction = l_ValidPosition - l_CameraPosition;
-            float l_Distance = Vector3.Distance(l_ValidPosition, l_CameraPosition);
-            // l_Direction.Normalize();
+            Vector3 l_Direction = l_VaildPoint.position - l_CameraPosition;
+            float l_Distance = Vector3.Distance(l_VaildPoint.position, l_CameraPosition);
             l_Direction /= l_Distance;
             Ray l_Ray = new Ray(l_CameraPosition, l_Direction);
-            if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, l_Distance + m_ValidDistanceOffset, m_ValidLayerMask.value, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, l_Distance + m_ValidDistanceOffset, m_ValidLayerMask))
             {
-                if (l_RaycastHit.collider.CompareTag("DrawableWall"))
+                if(l_RaycastHit.collider.CompareTag("DrawableWall"))
                 {
-                    if(Vector3.Distance(l_RaycastHit.point, l_ValidPosition)<m_ValidDistanceOffset)
+                    if (Vector3.Distance(l_RaycastHit.point, l_VaildPoint.position) < m_ValidDistanceOffset)
                     {
-                        float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, m_ValidPosition[i].forward);
-                        if (l_DotAngle < Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
+                        float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, l_VaildPoint.forward);
+                        if (l_DotAngle > Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
+                        {
                             l_Valid = false;
+                        }
                     }
-                    else
-                        l_Valid = false;
-                }
-                else
+                }else
+                {
                     l_Valid = false;
+                }
+            }else
+            {
+                l_Valid = false;
             }
-            else
-                l_Valid = false;                
         }
         return l_Valid;
     }

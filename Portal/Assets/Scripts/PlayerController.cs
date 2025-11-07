@@ -293,7 +293,7 @@ public class PlayerController : MonoBehaviour
             Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
             {
-                if (l_RayCastHit.collider.CompareTag("Cube"))
+                if (l_RayCastHit.collider.CompareTag("Cube") || l_RayCastHit.collider.CompareTag("RefractionCube"))
                 {
                     AttachObject(l_RayCastHit.rigidbody);
                 }
