@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Search;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_ReloadKeyCode = KeyCode.R;
     public KeyCode m_GrabKeyCode = KeyCode.E;
     public int m_BlueShootMouseButton = 0;
-    public int m_OrangeShootMouseButton =1;
+    public int m_OrangeShootMouseButton = 1;
 
     [Header("Ddebug Input")]
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
@@ -170,9 +171,9 @@ public class PlayerController : MonoBehaviour
 
         if (CanShoot())
         {
-            if (Input.GetMouseButtonDown(m_BlueShootMouseButton))
+            if (Input.GetMouseButton(m_BlueShootMouseButton))
                 Shoot(m_BluePortal);
-            else if (Input.GetMouseButtonDown(m_OrangeShootMouseButton))
+            else if (Input.GetMouseButton(m_OrangeShootMouseButton))
                 Shoot(m_OrangePortal);
         }
         if (CanAttachObject())
