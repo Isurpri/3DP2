@@ -7,6 +7,7 @@ TagManager:
   - Cube
   - Portal
   - DrawableWall
+  - RefractionCube
   layers:
   - Default
   - TransparentFX

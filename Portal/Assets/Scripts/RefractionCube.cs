@@ -1,33 +1,55 @@
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class RefractionCube : MonoBehaviour
 {
-    GameObject m_LineRenderer;
-    bool m_CreateRefraction;
-    public float m_MaxDistance = 1.5f;
-    LayerMask m_CollisionLayerMask;
+    public LineRenderer m_LineRenderer;
+    public float m_MaxDist = 50;
+    public LayerMask m_Layer;
+    bool m_IsReflectingLaser=false;
 
-    void Update()
+    private void Start()
     {
-        m_LineRenderer.gameObject.SetActive(m_CreateRefraction);
-        m_CreateRefraction=false;
+        m_LineRenderer.gameObject.SetActive(false);
     }
-    public void CreateRefraction()
+
+    private void Update()
     {
-        m_CreateRefraction=true;
-        Vector3 l_EndRaycastPosition=Vector3.forward*m_MaxDistance;
-        RaycastHit l_RaycastHit;
-        if(Physics.Raycast(new Ray(m_LineRenderer.transform.position, m_LineRenderer.transform.forward), out
-        l_RaycastHit, m_MaxDistance, m_CollisionLayerMask.value))
+        if (m_IsReflectingLaser)
         {
-        l_EndRaycastPosition=Vector3.forward*l_RaycastHit.distance;
-        if(l_RaycastHit.collider.tag=="RefractionCube")
+            UpdateLaser();
+            m_IsReflectingLaser = false;
+        }
+        else
+            m_LineRenderer.gameObject.SetActive(false);
+
+    }
+    public void Reflect()
+    {
+        if (m_IsReflectingLaser) 
+        { 
+            return; 
+        }
+
+        m_IsReflectingLaser = true;
+        UpdateLaser();
+       
+    }
+   public void UpdateLaser()
+    {
+        m_LineRenderer.gameObject.SetActive(true);
+
+        float l_Distance = m_MaxDist;
+        Ray l_Ray = new Ray(m_LineRenderer.transform.position, m_LineRenderer.transform.forward);
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_MaxDist, m_Layer.value, QueryTriggerInteraction.Ignore))
         {
-        //Reflect ray
-        l_RaycastHit.collider.GetComponent<RefractionCube>().CreateRefraction();
+            l_Distance = l_RayCastHit.distance;
+            if (l_RayCastHit.collider.CompareTag("RefractionCube"))
+            {
+                l_RayCastHit.collider.GetComponent<RefractionCube>().Reflect();
+            }
         }
-        //Other collisions
-        }
-        // m_LineRenderer.SetPosition(1, l_EndRaycastPosition);
-    }    
+        Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);
+        m_LineRenderer.SetPosition(1, l_Position);
+    }
 }
