@@ -8,6 +8,8 @@ TagManager:
   - Portal
   - DrawableWall
   - RefractionCube
+  - DeadZone
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

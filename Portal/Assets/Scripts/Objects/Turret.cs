@@ -28,7 +28,7 @@ public class Turret : MonoBehaviour
                 }
                 if (l_RayCastHit.collider.CompareTag("Player"))
                 {
-                    Debug.Log("Muelto");
+                    l_RayCastHit.collider.GetComponent<PlayerController>().Kill();
                 }
             }
             Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);

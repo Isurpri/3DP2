@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
 using UnityEditor.Search;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
+    Vector3 m_startPosition;
+    Quaternion m_startRotation;
+
     float m_Yaw;
     float m_Pitch;
     public float m_YawSpeed;
@@ -25,7 +29,6 @@ public class PlayerController : MonoBehaviour
     [Header("Shoot")]
     public float m_ShootMaxDistance = 50.0f;
     public LayerMask m_ShootLayerMask;
-    // public GameObject m_ShootParticles;
 
     [Header("Input")]
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -80,36 +83,35 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 
-        // // Espera a que el GameManager exista
-        // if (GameManager.GetGameManager() == null)
-        // {
-        //     StartCoroutine(WaitForGameManager());
-        //     return;
-        // }
+        if (GameManager.GetGameManager() == null)
+        {
+            StartCoroutine(WaitForGameManager());
+            return;
+        }
 
-        // var l_Player = GameManager.GetGameManager().GetPlayer();
-        // if (l_Player != null)
-        // {
-        //     l_Player.m_CharacterController.enabled = false;
-        //     l_Player.transform.position = transform.position;
-        //     l_Player.transform.rotation = transform.rotation;
-        //     l_Player.m_CharacterController.enabled = true;
-        //     l_Player.m_startPosition = transform.position;
-        //     l_Player.m_startRotation = transform.rotation;
-        //     Destroy(gameObject);
-        //     return;
-        // }
+        var l_Player = GameManager.GetGameManager().GetPlayer();
+        if (l_Player != null)
+        {
+            l_Player.m_CharacterController.enabled = false;
+            l_Player.transform.position = transform.position;
+            l_Player.transform.rotation = transform.rotation;
+            l_Player.m_CharacterController.enabled = true;
+            l_Player.m_startPosition = transform.position;
+            l_Player.m_startRotation = transform.rotation;
+            Destroy(gameObject);
+            return;
+        }
 
         DontDestroyOnLoad(gameObject);
-        // GameManager.GetGameManager().SetPlayer(this);
+        GameManager.GetGameManager().SetPlayer(this);
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // IEnumerator WaitForGameManager()
-    // {
-    //     yield return new WaitUntil(() => GameManager.GetGameManager() != null);
-    //     Start(); 
-    // }
+    IEnumerator WaitForGameManager()
+    {
+        yield return new WaitUntil(() => GameManager.GetGameManager() != null);
+        Start();
+    }
     void Update()
     {
         float l_MouseX = Input.GetAxis("Mouse X");
@@ -260,9 +262,9 @@ public class PlayerController : MonoBehaviour
                 Teleport(other.GetComponent<Portal>());
         }
 
-        else if (other.CompareTag("DeadZone"))
+        if (other.CompareTag("DeadZone"))
         {
-            Debug.Log("reinicio");
+            Kill();
         }
 
     }
@@ -355,13 +357,13 @@ public class PlayerController : MonoBehaviour
         m_AttachedObjectRb.GetComponent<CompanionCube>().SetAttachedObj(false);
         m_AttachedObjectRb = null;
     }
-    // void Kill()
-    // {
-    //     GameManager.GetGameManager().m_fade.FadeIn(() =>
-    //     {
-    //         GameManager.GetGameManager().RestartLevel();
-    //     });
-    // }
+    public void Kill()
+    {
+        GameManager.GetGameManager().m_fade.FadeIn(() =>
+        {
+            GameManager.GetGameManager().RestartLevel();
+        });
+    }
 
     /*public void Restart() 
     { 
