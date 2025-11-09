@@ -6,7 +6,7 @@ public class CompanionCube : MonoBehaviour
     public float m_PortalDis = 1.5f;
     public float m_MaxAngleToTeleport = 45.0f;
     bool m_AttachedObj = false;
-
+    public bool m_CanResize = true;
     private void Awake()
     {
         m_rb = GetComponent<Rigidbody>();
@@ -40,8 +40,12 @@ public class CompanionCube : MonoBehaviour
 
         Vector3 l_localVelocity = _Portal.m_OtherPortalTransform.InverseTransformDirection(m_rb.linearVelocity);
         m_rb.linearVelocity = _Portal.m_MirrorPortal.transform.TransformDirection(l_localVelocity);
-        float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x/_Portal.transform.localScale.x;
-        m_rb.transform.localScale = Vector3.one * l_Scale * m_rb.transform.localScale.x;
+
+        if (m_CanResize)
+        {
+            float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x / _Portal.transform.localScale.x;
+            m_rb.transform.localScale = Vector3.one * l_Scale * m_rb.transform.localScale.x;
+        }
     }
 
     public void SetAttachedObj(bool AttachedObj)

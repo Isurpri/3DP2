@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEditor.Search;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
@@ -171,10 +171,16 @@ public class PlayerController : MonoBehaviour
 
         if (CanShoot())
         {
-            if (Input.GetMouseButton(m_BlueShootMouseButton))
+            if (Input.GetMouseButton(m_BlueShootMouseButton)) 
+            {
+                ResizePortal(m_BluePortal);
                 Shoot(m_BluePortal);
+            }
             else if (Input.GetMouseButton(m_OrangeShootMouseButton))
+            {
+                ResizePortal(m_OrangePortal);
                 Shoot(m_OrangePortal);
+            }
         }
         if (CanAttachObject())
         {
@@ -206,28 +212,29 @@ public class PlayerController : MonoBehaviour
     {
         //SetShootAnimation();
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
         if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance,_Portal.m_ValidLayerMask.value,QueryTriggerInteraction.Ignore))
         {
             if (l_RayCastHit.collider.CompareTag("DrawableWall"))
             {
+
                 if (_Portal.IsValidPosition(l_RayCastHit.point, l_RayCastHit.normal))
                 {
+                    _Portal.transform.position = l_RayCastHit.point;
+                    _Portal.transform.rotation = Quaternion.LookRotation(l_RayCastHit.normal);
                     _Portal.gameObject.SetActive(true);
+
+                    _Portal.m_LastValidPos = _Portal.transform.position;
+                    _Portal.m_LastvalidRot = _Portal.transform.rotation;
                 }
                 else
-                    _Portal.gameObject.SetActive(false);
+                    _Portal.transform.position = _Portal.m_LastValidPos;
+                    _Portal.transform.rotation = _Portal.m_LastvalidRot;
+                    _Portal.gameObject.SetActive(true);
 
             }
-                
-            // if (l_RayCastHit.collider.CompareTag("HitCollider"))
-            //     l_RayCastHit.collider.GetComponent<HitCollider>().Hit();
-            // else if (l_RayCastHit.collider.CompareTag("Target"))
-            // {
-            //     m_score += l_RayCastHit.collider.GetComponent<TargetCollider>().Hit();
-            //     UIManager.Instance.SumScore(m_score);
-            // }
-            // else
-            //     CreateShootHitParticles(l_RayCastHit.point, l_RayCastHit.normal);
+
+
         }
     }
     
@@ -252,16 +259,12 @@ public class PlayerController : MonoBehaviour
             if (CanTeleport(l_Portal))
                 Teleport(other.GetComponent<Portal>());
         }
-        // if (other.CompareTag("Button"))
-        // {
-        //     m_score = 0;
-        //     // UIManager.Instance.SumScore(m_score);
-        // }
-        // else if (other.CompareTag("DeadZone"))
-        // {
-        //     // Kill();
-        // }
-       
+
+        else if (other.CompareTag("DeadZone"))
+        {
+            Debug.Log("reinicio");
+        }
+
     }
     bool CanTeleport(Portal _Portal)
     {
@@ -367,7 +370,27 @@ public class PlayerController : MonoBehaviour
         transform.rotation = m_startRotation; 
         m_CharacterController.enabled = true; 
     }*/
-    
 
- 
+    public void ResizePortal(Portal _Portal)
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scroll > 0f) 
+        {
+            if (_Portal.m_Sizeportal < 1f) 
+                _Portal.m_Sizeportal = 1f;
+            else if (_Portal.m_Sizeportal >= 1f)
+                _Portal.m_Sizeportal = 2f;
+        }
+        else if (scroll < 0f) 
+        {
+            if (_Portal.m_Sizeportal > 1f) 
+                _Portal.m_Sizeportal = 1f;
+            else if (_Portal.m_Sizeportal <= 1f) 
+                _Portal.m_Sizeportal = 0.5f;
+        }
+
+        _Portal.transform.localScale = new Vector3(_Portal.m_Sizeportal, _Portal.m_Sizeportal, _Portal.m_Sizeportal);
+    }
+
 }

@@ -13,7 +13,16 @@ public class Portal : MonoBehaviour
     float m_ValidDistanceOffset = 0.15f;
     public LayerMask m_ValidLayerMask;
     public float m_MaxAnglePermitted = 5.0f;
-    
+
+    public Vector3 m_LastValidPos;
+    public Quaternion m_LastvalidRot;
+
+    public float m_Sizeportal = 1;
+
+    private void Start()
+    {
+        gameObject.transform.localScale = new Vector3(m_Sizeportal, m_Sizeportal, m_Sizeportal);
+    }
     public void LateUpdate()
     {
         Vector3 l_WorldPosition = Camera.main.transform.position;
