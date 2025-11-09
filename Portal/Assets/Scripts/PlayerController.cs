@@ -233,8 +233,12 @@ public class PlayerController : MonoBehaviour
                     _Portal.gameObject.SetActive(true);
 
             }
-
-
+            else
+            {
+                _Portal.transform.position = _Portal.m_LastValidPos;
+                _Portal.transform.rotation = _Portal.m_LastvalidRot;
+                _Portal.gameObject.SetActive(true);
+            }
         }
     }
     
