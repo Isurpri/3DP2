@@ -374,23 +374,35 @@ public class PlayerController : MonoBehaviour
     public void ResizePortal(Portal _Portal)
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float previousSize = _Portal.m_Sizeportal; 
+        float newSize = previousSize;
 
         if (scroll > 0f) 
         {
-            if (_Portal.m_Sizeportal < 1f) 
-                _Portal.m_Sizeportal = 1f;
+            if (_Portal.m_Sizeportal < 1f)
+                newSize = 1f;
             else if (_Portal.m_Sizeportal >= 1f)
-                _Portal.m_Sizeportal = 2f;
+                newSize = 2f;
         }
         else if (scroll < 0f) 
         {
-            if (_Portal.m_Sizeportal > 1f) 
-                _Portal.m_Sizeportal = 1f;
-            else if (_Portal.m_Sizeportal <= 1f) 
-                _Portal.m_Sizeportal = 0.5f;
+            if (_Portal.m_Sizeportal > 1f)
+                newSize = 1f;
+            else if (_Portal.m_Sizeportal <= 1f)
+                newSize = 0.5f;
         }
 
-        _Portal.transform.localScale = new Vector3(_Portal.m_Sizeportal, _Portal.m_Sizeportal, _Portal.m_Sizeportal);
+        _Portal.transform.localScale = new Vector3(newSize, newSize, newSize);
+
+        if (_Portal.IsValidPosition(_Portal.transform.position, _Portal.transform.forward))
+        {
+            _Portal.m_Sizeportal = newSize;
+        }
+        else
+        {
+            _Portal.transform.localScale = new Vector3(previousSize, previousSize, previousSize);
+        }
     }
+
 
 }

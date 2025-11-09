@@ -48,6 +48,10 @@ public class RefractionCube : MonoBehaviour
             {
                 l_RayCastHit.collider.GetComponent<RefractionCube>().Reflect();
             }
+            if (l_RayCastHit.collider.CompareTag("Player"))
+            {
+                Debug.Log("Muelto");
+            }
         }
         Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);
         m_LineRenderer.SetPosition(1, l_Position);
