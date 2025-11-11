@@ -19,8 +19,8 @@ public class Portal : MonoBehaviour
 
     public float m_Sizeportal = 1;
 
-    [Header("Overlap prevention")]
-    public float m_PortalOverlapMargin = 0.05f;
+    [Header("PortalSeparation")]
+    public float m_PortalSep = 0.05f;
     public bool m_CheckOverlapWithOtherPortal = true;
 
     private void Start()
@@ -51,11 +51,11 @@ public class Portal : MonoBehaviour
 
         if (m_CheckOverlapWithOtherPortal && m_MirrorPortal != null && m_MirrorPortal.IsActive())
         {
-            float myDiameter = m_Sizeportal;
-            float otherDiameter = m_MirrorPortal.m_Sizeportal;
-            float minDistance = (myDiameter * 0.5f) + (otherDiameter * 0.5f) + m_PortalOverlapMargin;
-            float actualDistance = Vector3.Distance(transform.position, m_MirrorPortal.transform.position);
-            if (actualDistance < minDistance)
+            float l_Diameter = m_Sizeportal;
+            float l_otherDiameter = m_MirrorPortal.m_Sizeportal;
+            float l_minDistance = (l_Diameter * 0.5f) + (l_otherDiameter * 0.5f) + m_PortalSep;
+            float l_actualDistance = Vector3.Distance(transform.position, m_MirrorPortal.transform.position);
+            if (l_actualDistance < l_minDistance)
                 l_Valid = false;
         }
 
