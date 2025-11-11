@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public class Portal : MonoBehaviour
 {
     public Camera m_Camera;
@@ -18,10 +19,15 @@ public class Portal : MonoBehaviour
 
     public float m_Sizeportal = 1;
 
+    [Header("Overlap prevention")]
+    public float m_PortalOverlapMargin = 0.05f;
+    public bool m_CheckOverlapWithOtherPortal = true;
+
     private void Start()
     {
         gameObject.transform.localScale = new Vector3(m_Sizeportal, m_Sizeportal, m_Sizeportal);
     }
+
     public void LateUpdate()
     {
         Vector3 l_WorldPosition = Camera.main.transform.position;
@@ -35,6 +41,7 @@ public class Portal : MonoBehaviour
         float l_DistanceToPortal = Vector3.Distance(m_MirrorPortal.transform.position, m_MirrorPortal.m_Camera.transform.position);
         m_MirrorPortal.m_Camera.nearClipPlane = l_DistanceToPortal + m_NearCameraOffset;
     }
+
     public bool IsValidPosition(Vector3 Position, Vector3 Normal)
     {
         gameObject.SetActive(false);
@@ -42,20 +49,35 @@ public class Portal : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(Normal);
         bool l_Valid = true;
 
+        if (m_CheckOverlapWithOtherPortal && m_MirrorPortal != null && m_MirrorPortal.IsActive())
+        {
+            float myDiameter = m_Sizeportal;
+            float otherDiameter = m_MirrorPortal.m_Sizeportal;
+            float minDistance = (myDiameter * 0.5f) + (otherDiameter * 0.5f) + m_PortalOverlapMargin;
+            float actualDistance = Vector3.Distance(transform.position, m_MirrorPortal.transform.position);
+            if (actualDistance < minDistance)
+                l_Valid = false;
+        }
+
+        if (!l_Valid)
+        {
+            gameObject.SetActive(false);
+            return false;
+        }
+
         Vector3 l_CameraPosition = Camera.main.transform.position;
         for (int i = 0; i < m_ValidPosition.Count; i++)
         {
             Vector3 l_ValidPosition = m_ValidPosition[i].position;
             Vector3 l_Direction = l_ValidPosition - l_CameraPosition;
             float l_Distance = Vector3.Distance(l_ValidPosition, l_CameraPosition);
-            // l_Direction.Normalize();
             l_Direction /= l_Distance;
             Ray l_Ray = new Ray(l_CameraPosition, l_Direction);
             if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, l_Distance + m_ValidDistanceOffset, m_ValidLayerMask.value, QueryTriggerInteraction.Ignore))
             {
                 if (l_RaycastHit.collider.CompareTag("DrawableWall"))
                 {
-                    if(Vector3.Distance(l_RaycastHit.point, l_ValidPosition)<m_ValidDistanceOffset)
+                    if (Vector3.Distance(l_RaycastHit.point, l_ValidPosition) < m_ValidDistanceOffset)
                     {
                         float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, m_ValidPosition[i].forward);
                         if (l_DotAngle < Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
@@ -68,8 +90,18 @@ public class Portal : MonoBehaviour
                     l_Valid = false;
             }
             else
-                l_Valid = false;                
+                l_Valid = false;
+
+            if (!l_Valid)
+                break;
         }
+
+        gameObject.SetActive(false);
         return l_Valid;
+    }
+
+    public bool IsActive()
+    {
+        return this.gameObject.activeSelf;
     }
 }

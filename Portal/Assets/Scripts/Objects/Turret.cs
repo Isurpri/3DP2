@@ -26,9 +26,13 @@ public class Turret : MonoBehaviour
                 {
                     l_RayCastHit.collider.GetComponent<RefractionCube>().Reflect();
                 }
-                if (l_RayCastHit.collider.CompareTag("Player"))
+                else if (l_RayCastHit.collider.CompareTag("Player"))
                 {
                     l_RayCastHit.collider.GetComponent<PlayerController>().Kill();
+                }
+                else if (l_RayCastHit.collider.CompareTag("Turret"))
+                {
+                    l_RayCastHit.collider.gameObject.SetActive(false);
                 }
             }
             Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);

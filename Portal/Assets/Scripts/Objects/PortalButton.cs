@@ -11,10 +11,10 @@ public class PortalButton : MonoBehaviour
         {
             m_Event.Invoke();
         }
-        if (other.CompareTag("Player"))
+       /* if (other.CompareTag("Player"))
         {
             m_Event.Invoke();
-        }
+        }*/
     }
     private void OnTriggerExit(Collider other)
     {
@@ -22,9 +22,9 @@ public class PortalButton : MonoBehaviour
         {
             m_Event.Invoke();
         }
-        if (other.CompareTag("Player"))
+        /*if (other.CompareTag("Player"))
         {
             m_Event.Invoke();
-        }
+        }*/
     }
 }

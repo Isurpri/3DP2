@@ -10,6 +10,7 @@ TagManager:
   - RefractionCube
   - DeadZone
   - SpawnPoint
+  - Turret
   layers:
   - Default
   - TransparentFX

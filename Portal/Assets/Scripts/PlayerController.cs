@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     Vector3 m_startPosition;
@@ -78,8 +79,12 @@ public class PlayerController : MonoBehaviour
     // public ParticleSystem m_ParticlesBuff;
     // public ParticleSystem m_ParticlesNextLevel;
     // public ParticleSystem m_ParticlesHit;
+    [Header("Mirillas")]
+    public GameObject m_Notplaced;
+    public GameObject m_Blueplaced;
+    public GameObject m_Orangelaced;
+    public GameObject m_Placed;
 
-   
     void Start()
     {
 
@@ -199,8 +204,40 @@ public class PlayerController : MonoBehaviour
         // UIManager.Instance.UiVariables(m_ChargerAmmoCount, m_totalAmount, m_Health, m_Shield);
 
         // NextLevel();
+        Mirillas();
     }
 
+    public void Mirillas()
+    {
+        if (!m_BluePortal.IsActive() && !m_OrangePortal.IsActive())
+        {
+            m_Notplaced.SetActive(true);
+            m_Placed.SetActive(false);
+            m_Orangelaced.SetActive(false);
+            m_Blueplaced.SetActive(false);
+        }
+        else if (!m_BluePortal.IsActive() && m_OrangePortal.IsActive())
+        {
+            m_Notplaced.SetActive(false);
+            m_Placed.SetActive(false);
+            m_Orangelaced.SetActive(true);
+            m_Blueplaced.SetActive(false);
+        }
+        else if (m_BluePortal.IsActive() && !m_OrangePortal.IsActive())
+        {
+            m_Notplaced.SetActive(false);
+            m_Placed.SetActive(false);
+            m_Orangelaced.SetActive(false);
+            m_Blueplaced.SetActive(true);
+        }
+        else if (m_BluePortal.IsActive() && m_OrangePortal.IsActive())
+        {
+            m_Notplaced.SetActive(false);
+            m_Placed.SetActive(true);
+            m_Orangelaced.SetActive(false);
+            m_Blueplaced.SetActive(false);
+        }
+    }
     bool CanAttachObject()
     {
         return true;
@@ -303,7 +340,7 @@ public class PlayerController : MonoBehaviour
             Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
             {
-                if (l_RayCastHit.collider.CompareTag("Cube") || l_RayCastHit.collider.CompareTag("RefractionCube"))
+                if (l_RayCastHit.collider.CompareTag("Cube") || l_RayCastHit.collider.CompareTag("RefractionCube") || l_RayCastHit.collider.CompareTag("Turret"))
                 {
                     AttachObject(l_RayCastHit.rigidbody);
                 }
