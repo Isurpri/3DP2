@@ -178,7 +178,17 @@ public class PlayerController : MonoBehaviour
 
         if (CanShoot())
         {
-            if (Input.GetMouseButton(m_BlueShootMouseButton)) 
+            if (Input.GetMouseButtonDown(m_BlueShootMouseButton))
+            {
+                m_BluePortal.m_Sizeportal = 1f;
+                m_BluePortal.transform.localScale = Vector3.one;
+            }
+            else if (Input.GetMouseButtonDown(m_OrangeShootMouseButton))
+            {
+                m_OrangePortal.m_Sizeportal = 1f;
+                m_OrangePortal.transform.localScale = Vector3.one;
+            }
+            if (Input.GetMouseButton(m_BlueShootMouseButton))
             {
                 ResizePortal(m_BluePortal);
                 Shoot(m_BluePortal);
