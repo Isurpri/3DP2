@@ -249,6 +249,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxAnglePermitted: 5
+  m_LastValidPos: {x: 0, y: 0, z: 0}
+  m_LastvalidRot: {x: 0, y: 0, z: 0, w: 0}
+  m_Sizeportal: 1
 --- !u!65 &4160547104467335914
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -359,8 +362,8 @@ Transform:
   m_GameObject: {fileID: 5239551525803780852}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2439885, y: 0.07651388, z: 1.8896081}
+  m_LocalPosition: {x: 0, y: 0, z: 0.03}
+  m_LocalScale: {x: 1.2439885, y: 0.04380211, z: 1.8896081}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5182974999084004032}
