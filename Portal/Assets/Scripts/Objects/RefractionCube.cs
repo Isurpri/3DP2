@@ -1,7 +1,7 @@
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class RefractionCube : MonoBehaviour
+public class RefractionCube : CompanionCube
 {
     public LineRenderer m_LineRenderer;
     public float m_MaxDist = 50;
@@ -52,7 +52,7 @@ public class RefractionCube : MonoBehaviour
             {
                 l_RayCastHit.collider.GetComponent<PlayerController>().Kill();
             }
-            else if (l_RayCastHit.collider.CompareTag("Turret"))
+            if (l_RayCastHit.collider.CompareTag("Turret"))
             {
                 l_RayCastHit.collider.gameObject.SetActive(false);
             }
