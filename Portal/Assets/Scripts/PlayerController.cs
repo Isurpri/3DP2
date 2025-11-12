@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
     public float m_AttachObjectRotationDistLerp = 2.0f;
     bool m_attachedObject;
     public LayerMask m_ValidAttachObjectsLayerMask;
+    public float m_DistancetoAttach = 5.0f;
 
     // [Header("particles")]
     // public ParticleSystem m_ParticlesHealth;
@@ -214,10 +215,10 @@ public class PlayerController : MonoBehaviour
         // UIManager.Instance.UiVariables(m_ChargerAmmoCount, m_totalAmount, m_Health, m_Shield);
 
         // NextLevel();
-        Mirillas();
+        Crosshair();
     }
 
-    public void Mirillas()
+    public void Crosshair()
     {
         if (!m_BluePortal.IsActive() && !m_OrangePortal.IsActive())
         {
@@ -250,7 +251,16 @@ public class PlayerController : MonoBehaviour
     }
     bool CanAttachObject()
     {
-        return true;
+
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RayCastHit, m_ShootMaxDistance, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
+        {
+            if (Vector3.Distance(l_RayCastHit.point, this.gameObject.transform.position)<=m_DistancetoAttach)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     bool CanShoot()
