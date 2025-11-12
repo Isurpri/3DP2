@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class Turret : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class Turret : MonoBehaviour
                 else if (l_RayCastHit.collider.CompareTag("Turret"))
                 {
                     l_RayCastHit.collider.gameObject.SetActive(false);
+                }
+                else if (l_RayCastHit.collider.CompareTag("Glass"))
+                {
+                    l_RayCastHit.collider.gameObject.SetActive(true);
                 }
             }
             Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);
