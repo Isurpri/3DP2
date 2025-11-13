@@ -977,7 +977,7 @@ PrefabInstance:
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CurrentCube
       value: 
-      objectReference: {fileID: 4156171734466827454, guid: 700b806dd9ab175489d2aa1eb883778f, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CompanionCubePrefab
       value: 
@@ -1484,7 +1484,7 @@ PrefabInstance:
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CurrentCube
       value: 
-      objectReference: {fileID: 4156171734466827454, guid: 700b806dd9ab175489d2aa1eb883778f, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CompanionCubePrefab
       value: 
@@ -3451,7 +3451,7 @@ PrefabInstance:
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CurrentCube
       value: 
-      objectReference: {fileID: 4156171734466827454, guid: 700b806dd9ab175489d2aa1eb883778f, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CompanionCubePrefab
       value: 
@@ -7349,6 +7349,10 @@ PrefabInstance:
       propertyPath: m_MirrorPortal
       value: 
       objectReference: {fileID: 242002208}
+    - target: {fileID: 8156838835839028647, guid: 6cde5562023ae4a4c8a50b01c9f1d993, type: 3}
+      propertyPath: m_ValidLayerMask.m_Bits
+      value: 87
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14085,6 +14089,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1094780218}
     m_Modifications:
+    - target: {fileID: 6481571788332545457, guid: 336b7da6ff990e443b575c3aa149e662, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 6481571788332545463, guid: 336b7da6ff990e443b575c3aa149e662, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0486
@@ -17305,7 +17313,7 @@ PrefabInstance:
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CurrentCube
       value: 
-      objectReference: {fileID: 4156171734466827454, guid: 700b806dd9ab175489d2aa1eb883778f, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CompanionCubePrefab
       value: 
@@ -17986,7 +17994,7 @@ PrefabInstance:
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CurrentCube
       value: 
-      objectReference: {fileID: 2119766841446864, guid: 166984918ab92df47846a9bcce3e74b6, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4974090650761232678, guid: b540fc79c3a08ae4a9502a268b85f54f, type: 3}
       propertyPath: m_CompanionCubePrefab
       value: 
@@ -30969,6 +30977,10 @@ PrefabInstance:
       propertyPath: m_MirrorPortal
       value: 
       objectReference: {fileID: 1725354773}
+    - target: {fileID: 1006700460114898405, guid: a56a8fb0a2488fa4da713337aa204ce2, type: 3}
+      propertyPath: m_ValidLayerMask.m_Bits
+      value: 71
+      objectReference: {fileID: 0}
     - target: {fileID: 3310011276572002276, guid: a56a8fb0a2488fa4da713337aa204ce2, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.02

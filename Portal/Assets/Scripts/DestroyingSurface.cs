@@ -18,5 +18,10 @@ public class DestroyingSurface : MonoBehaviour
         {
             other.gameObject.SetActive(false);
         }
+        else if (other.CompareTag("Player"))
+        {
+            other.GetComponent<PlayerController>().m_BluePortal.gameObject.SetActive(false);
+            other.GetComponent<PlayerController>().m_OrangePortal.gameObject.SetActive(false);
+        }
     }
 }
